@@ -226,3 +226,98 @@ function gameLoop() {
 }
 
 gameLoop();
+// ==================== سیستمی کڕین ====================
+let selectedWeapon = null; // چەکی هەڵبژێردراو
+
+const weapons = {
+    arrow: { name: 'Arrow Tower', cost: 50, damage: 15, range: 200, color: '#3498db' },
+    catapult: { name: 'Catapult', cost: 100, damage: 30, range: 150, color: '#e67e22' },
+    fire: { name: 'Fire Bow', cost: 150, damage: 20, range: 180, color: '#e74c3c' }
+};
+
+// گۆڕینی دوگمەی Shop بۆ کڕین
+shopBtn.addEventListener('click', () => {
+    const choice = prompt(
+        '🛒 Shop:\n' +
+        '1. Arrow Tower (50 coins) - Damage: 15\n' +
+        '2. Catapult (100 coins) - Damage: 30\n' +
+        '3. Fire Bow (150 coins) - Damage: 20 + Burn\n\n' +
+        'ژمارەی چەکەکە بنووسە (1, 2, 3):'
+    );
+    
+    if (choice === null) return; // هەڵوەشاندنەوە
+    
+    let weaponKey = null;
+    let weaponCost = 0;
+    
+    if (choice === '1') { weaponKey = 'arrow'; weaponCost = weapons.arrow.cost; }
+    else if (choice === '2') { weaponKey = 'catapult'; weaponCost = weapons.catapult.cost; }
+    else if (choice === '3') { weaponKey = 'fire'; weaponCost = weapons.fire.cost; }
+    else { alert('ژمارەی نادروست!'); return; }
+    
+    if (coins >= weaponCost) {
+        coins -= weaponCost;
+        selectedWeapon = weaponKey;
+        alert(`${weapons[weaponKey].name} کڕدرا! ئێستا کلیک لەسەر زەوی بکە بۆ دانانی.`);
+        // دوای کڕین، دەتوانیت تاوەرەکە دابنێیت
+        canvas.style.cursor = 'crosshair';
+    } else {
+        alert('کۆینت بەس نییە!');
+    }
+});
+
+// گۆڕینی سیستمی دانانی تاوەر بۆ کڕینی چەکی هەڵبژێردراو
+canvas.addEventListener('click', (e) => {
+    if (gameOver) { document.location.reload(); return; }
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+    
+    if (y < GROUND_Y - 20 || y > GROUND_Y + 10) return;
+    
+    // ئەگەر چەکێک هەڵبژێردرابوو، بەکاری بهێنە
+    if (selectedWeapon) {
+        const weapon = weapons[selectedWeapon];
+        // دروستکردنی تاوەر بە تایبەتمەندییەکانی چەکەکە
+        const tower = new Tower(x, y);
+        tower.damage = weapon.damage;
+        tower.range = weapon.range;
+        tower.color = weapon.color;
+        towers.push(tower);
+        selectedWeapon = null;
+        canvas.style.cursor = 'default';
+    } else if (coins >= 50) {
+        // تاوەری بنەڕەت
+        towers.push(new Tower(x, y));
+        coins -= 50;
+    }
+});
+
+// هەمان شت بۆ مۆبایل
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (gameOver) { document.location.reload(); return; }
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (touch.clientX - rect.left) * scaleX;
+    const y = (touch.clientY - rect.top) * scaleY;
+    
+    if (y < GROUND_Y - 20 || y > GROUND_Y + 10) return;
+    
+    if (selectedWeapon) {
+        const weapon = weapons[selectedWeapon];
+        const tower = new Tower(x, y);
+        tower.damage = weapon.damage;
+        tower.range = weapon.range;
+        tower.color = weapon.color;
+        towers.push(tower);
+        selectedWeapon = null;
+    } else if (coins >= 50) {
+        towers.push(new Tower(x, y));
+        coins -= 50;
+    }
+}, { passive: false });
