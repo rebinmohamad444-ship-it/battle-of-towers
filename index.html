@@ -5,25 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>Battle of Towers</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* هەموو CSSـەکەت لێرەدا */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #0b1a2f;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            font-family: Arial, sans-serif;
             overflow: hidden;
         }
         canvas {
             border: 3px solid #f1c40f;
             border-radius: 12px;
             background: #2d5a1b;
-            box-shadow: 0 0 30px rgba(241, 196, 15, 0.3);
             max-width: 100%;
             max-height: 100vh;
             touch-action: none;
@@ -34,18 +29,31 @@
             left: 20px;
             color: #fff;
             font-size: 18px;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.5);
             padding: 8px 16px;
             border-radius: 20px;
-            pointer-events: none;
+        }
+        #shopBtn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: #f1c40f;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+            cursor: pointer;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
     <div class="info">⚔️ Battle of Towers</div>
     <canvas id="gameCanvas" width="800" height="500"></canvas>
+    <button id="shopBtn">🛒 Shop</button>
 
-    <!-- بەستنەوەی JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
